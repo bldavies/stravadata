@@ -1,0 +1,16 @@
+Package: stravadata
+Type: Package
+Title: Strava activity data
+Version: 0.1.0
+Authors@R:
+  person(given = "Benjamin",
+         family = "Davies",
+         email = "ben.davies@motu.org.nz",
+         role = c("aut", "cre"),
+         comment = c(ORCID = "0000-0002-1749-4567"))
+Description: This package contains my Strava activity data.
+Depends: R (>= 2.10)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
