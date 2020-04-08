@@ -16,7 +16,7 @@ The steps for doing so are as follows.
   client_id: xxxxx
   secret: xxxxx
   ```
-4. Run `source("data-raw/activities.R")` in a fresh `stravadata.Rproj` instance.
+4. Run `source("data-raw/activities.R")` and `source("data-raw/streams.R")` in fresh `stravadata.Rproj` instances.
   (This may take some time for users with many Strava activities or a slow internet connection.)
 5. Install the package locally via `devtools::install()`.
 
