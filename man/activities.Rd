@@ -4,7 +4,8 @@
 \name{activities}
 \alias{activities}
 \title{Strava activity features}
-\format{Data frame with columns
+\format{
+Data frame with columns
 \describe{
 \item{id}{Activity ID}
 \item{name}{Activity name}
@@ -21,7 +22,8 @@
 \item{mean_cadence}{Mean cadence (rotations per minute)}
 \item{n_athletes}{Number of athletes}
 \item{exertion}{Perceived exertion on 1--10 scale}
-}}
+}
+}
 \source{
 \href{https://developers.strava.com}{Strava API}
 }
