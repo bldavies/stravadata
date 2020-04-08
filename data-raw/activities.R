@@ -98,5 +98,4 @@ save(activities, file = 'data/activities.rda', version = 2, compress = 'bzip2')
 
 # Session info ----
 
-options(width = 80)
-writeLines(capture.output(sessioninfo::session_info()), 'data-raw/activities.log')
+bldr::save_session_info('data-raw/activities.log')
