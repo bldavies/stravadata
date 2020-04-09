@@ -11,7 +11,6 @@
 #' @format Data frame with columns
 #' \describe{
 #' \item{id}{Activity ID}
-#' \item{index}{Index}
 #' \item{distance}{Cumulative distance (metres)}
 #' \item{time}{Cumulative time (seconds)}
 #' \item{moving}{Whether moving}

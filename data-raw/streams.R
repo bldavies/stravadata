@@ -80,14 +80,13 @@ cache_list <- vector('list', length(cache_files))
 for (i in seq_along(cache_files)) {
   suppressMessages(cache_list[[i]] <- read_csv(paste0(cache_dir, cache_files[i])))
   cache_list[[i]]$id <- as.numeric(sub('[.]csv$', '', cache_files[i]))
-  cache_list[[i]]$index <- seq_len(nrow(cache_list[[i]]))
 }
 
 streams <- cache_list %>%
   bind_rows() %>%
-  select(id, index, distance, time, moving, speed = velocity_smooth, lat, lon,
+  select(id, distance, time, moving, speed = velocity_smooth, lat, lon,
          altitude, grade = grade_smooth, hr = heartrate, cadence) %>%
-  arrange(id, index)
+  arrange(id, time)
 
 save(streams, file = 'data/streams.rda', version = 2, compress = 'bzip2')
 
