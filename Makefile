@@ -1,4 +1,6 @@
-all: activities streams package
+all: data package
+
+data: activities streams
 
 activities:
 	Rscript data-raw/activities.R

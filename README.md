@@ -1,10 +1,16 @@
 # stravadata
 
 stravadata is an R package providing convenient access to my [Strava](https://www.strava.com/) activity data.
+The package contains the following data frames.
 
-## Usage
+* `activities`: aggregate activity features.
+* `streams`: disaggregate activity streams.
 
-The public version of this package does not include any activity data.
+I obtain these data via the [Strava API](https://developers.strava.com).
+
+## Installation
+
+The public version of this package does not include any data.
 Users need to add their own.
 The steps for doing so are as follows.
 
@@ -16,17 +22,10 @@ The steps for doing so are as follows.
   client_id: xxxxx
   secret: xxxxx
   ```
-4. Run `source("data-raw/activities.R")` and `source("data-raw/streams.R")` in fresh `stravadata.Rproj` instances.
+4. Run `make data` in a Terminal window at the repo's top-level directory.
   (This may take some time for users with many Strava activities or a slow internet connection.)
-5. Install the package locally via `devtools::install()`.
 
-Steps 4 and 5 can be replaced by running `make` in a Terminal window at the repo's top-level directory.
-
-After completing these steps, the package and its data can be loaded via
-```r
-library(stravadata)
-data(activities)
-```
+After creating the data, run `make package` in the same Terminal window or `devtools::install()` in a fresh `stravadata.Rproj` instance to install the package.
 
 ## License
 
