@@ -35,6 +35,7 @@ keys <- c(
   'heartrate',
   'latlng',
   'moving',
+  'temp',
   'time',
   'velocity_smooth'
 ) %>%
