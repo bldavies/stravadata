@@ -5,6 +5,7 @@ The package contains the following data frames.
 
 * `activities`: aggregate activity features.
 * `streams`: disaggregate activity streams.
+* `best_efforts`: activity best efforts.
 
 I obtain these data via the [Strava API](https://developers.strava.com).
 
