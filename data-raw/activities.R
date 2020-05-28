@@ -17,6 +17,8 @@ library(readr)
 cache_dir <- 'data-raw/activities/'
 if (!dir.exists(cache_dir)) dir.create(cache_dir)
 
+req_delay <- ceiling(60 * 60 * 24 / 3e4)  # API rate limit is 30k requests per day
+
 
 # API requests ----
 
@@ -38,6 +40,7 @@ while (!done) {
   } else {
     i <- i + 1
   }
+  Sys.sleep(req_delay)
 }
 
 missing_ids <- setdiff(
@@ -56,6 +59,7 @@ for (id in missing_ids) {
     content(as = 'text') %>%
     prettify() %>%
     write_file(paste0(cache_dir, id, '.json'))
+  Sys.sleep(req_delay)
 }
 
 

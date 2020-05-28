@@ -27,6 +27,8 @@ load('data/activities.rda')
 cache_dir <- 'data-raw/streams/'
 if (!dir.exists(cache_dir)) dir.create(cache_dir)
 
+req_delay <- ceiling(60 * 60 * 24 / 3e4)  # API rate limit is 30k requests per day
+
 keys <- c(
   'altitude',
   'cadence',
@@ -71,6 +73,7 @@ for (id in missing_ids) {
     as_tibble() %>%
     mutate_at(c('lat', 'lon'), function(x) sprintf('%.6f', x)) %>%
     write_csv(paste0(cache_dir, id, '.csv'))
+  Sys.sleep(req_delay)
 }
 
 
