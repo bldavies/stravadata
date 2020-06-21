@@ -48,6 +48,10 @@ missing_ids <- setdiff(
   as.numeric(sub('[.]json', '', list.files(cache_dir)))
 )
 
+if (length(missing_ids) == 0) {
+  stop('Data already up to date.')
+}
+
 for (id in missing_ids) {
   req <- GET(
     url = paste0('https://www.strava.com/api/v3/activities/', id),
