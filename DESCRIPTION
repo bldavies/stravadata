@@ -5,7 +5,7 @@ Version: 0.1.0
 Authors@R:
   person(given = "Benjamin",
          family = "Davies",
-         email = "ben.davies@motu.org.nz",
+         email = "git@bldavies.com",
          role = c("aut", "cre"),
          comment = c(ORCID = "0000-0002-1749-4567"))
 Description: This package contains my Strava activity data.
