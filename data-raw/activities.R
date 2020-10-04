@@ -90,6 +90,7 @@ activities <- cache_list %>%
         mean_hr      = null2na(x$average_heartrate),
         max_hr       = null2na(x$max_heartrate),
         mean_cadence = null2na(x$average_cadence),
+        mean_temp    = null2na(x$average_temp),
         n_athletes   = x$athlete_count,
         exertion     = null2na(x$perceived_exertion)
       )
