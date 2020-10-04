@@ -22,7 +22,7 @@
 #' \item{elev_gain}{Total elevation gain (metres)}
 #' \item{mean_hr}{Mean heart rate (beats per minute)}
 #' \item{max_hr}{Maximum heart rate (beats per minute)}
-#' \item{mean_cadence}{Mean cadence (rotations per minute)}
+#' \item{mean_cadence}{Mean cadence (steps per minute)}
 #' \item{n_athletes}{Number of athletes}
 #' \item{exertion}{Perceived exertion on 1--10 scale}
 #' }
