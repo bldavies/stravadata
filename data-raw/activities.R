@@ -3,7 +3,7 @@
 # This script downloads Strava activity data from the Strava API.
 #
 # Ben Davies
-# February 2020
+# November 2020
 
 
 # Initialisation ----
@@ -92,7 +92,8 @@ activities <- cache_list %>%
         mean_cadence = null2na(x$average_cadence),
         mean_temp    = null2na(x$average_temp),
         n_athletes   = x$athlete_count,
-        exertion     = null2na(x$perceived_exertion)
+        exertion     = null2na(x$perceived_exertion),
+        suffer_score = null2na(x$suffer_score)
       )
     }
   ) %>%

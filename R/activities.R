@@ -26,6 +26,7 @@
 #' \item{mean_temp}{Mean temperature (degrees celsius)}
 #' \item{n_athletes}{Number of athletes}
 #' \item{exertion}{Perceived exertion on 1--10 scale}
+#' \item{suffer_score}{Suffer score}
 #' }
 #' 
 #' @source \href{https://developers.strava.com}{Strava API}
