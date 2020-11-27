@@ -3,7 +3,7 @@
 # This script downloads activity stream data via the Strava API.
 #
 # Ben Davies
-# April 2020
+# November 2020
 
 
 if (!file.exists('data/activities.rda')) {
@@ -63,15 +63,14 @@ for (id in missing_ids) {
   res <- list()
   for (i in seq_along(req_content)) {
     if (req_content[[i]]$type == 'latlng') {
-      res[['lat']] <- sapply(req_content[[i]]$data, function(x) x[[1]])
-      res[['lon']] <- sapply(req_content[[i]]$data, function(x) x[[2]])
+      res[['lat']] <- sprintf('%.6f', sapply(req_content[[i]]$data, function(x) x[[1]]))
+      res[['lon']] <- sprintf('%.6f', sapply(req_content[[i]]$data, function(x) x[[2]]))
     } else {
       res[[req_content[[i]]$type]] <- unlist(req_content[[i]]$data)
     }
   }
   res %>%
     as_tibble() %>%
-    mutate_at(c('lat', 'lon'), function(x) sprintf('%.6f', x)) %>%
     write_csv(paste0(cache_dir, id, '.csv'))
   Sys.sleep(req_delay)
 }
