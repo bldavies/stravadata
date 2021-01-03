@@ -28,15 +28,6 @@ The steps for doing so are as follows.
 
 After creating the data, run `make package` in the same Terminal window or `devtools::install()` in a fresh `stravadata.Rproj` instance to install the package.
 
-## Usage
-
-See my blog posts for example use cases:
-
-* [Accessing the Strava API with R](https://bldavies.com/blog/accessing-strava-api/)
-* [Comparing my running patterns during 2018 and 2019](https://bldavies.com/blog/comparing-running-patterns-2018-2019/)
-* [Activity streams in stravadata](https://bldavies.com/blog/activity-streams-stravadata/)
-* [Best efforts in stravadata](https://bldavies.com/blog/best-efforts-stravadata/)
-
 ## License
 
 MIT
