@@ -3,7 +3,7 @@
 # This script downloads activity stream data via the Strava API.
 #
 # Ben Davies
-# November 2020
+# September 2021
 
 
 if (!file.exists('data/activities.rda')) {
@@ -20,7 +20,9 @@ if (file_test('-ot', 'data/activities.rda', 'data/streams.rda')) {
 library(dplyr)
 library(httr)
 library(jsonlite)
+library(purrr)
 library(readr)
+library(vroom)
 
 load('data/activities.rda')
 
@@ -48,8 +50,9 @@ keys <- c(
 
 source('data-raw/oauth-token.R')
 
+types <- c('Run', 'Ride')
 missing_ids <- setdiff(
-  activities$id,
+  filter(activities, type %in% types)$id,
   as.numeric(sub('[.]csv$', '', list.files(cache_dir)))
 )
 
@@ -78,15 +81,10 @@ for (id in missing_ids) {
 
 # Data collation and export ----
 
-cache_files <- list.files(cache_dir)
-cache_list <- vector('list', length(cache_files))
-for (i in seq_along(cache_files)) {
-  suppressMessages(cache_list[[i]] <- read_csv(paste0(cache_dir, cache_files[i])))
-  cache_list[[i]]$id <- as.numeric(sub('[.]csv$', '', cache_files[i]))
-}
+cache_files <- list.files(cache_dir, full.names = T)
 
-streams <- cache_list %>%
-  bind_rows() %>%
+streams <- map_df(cache_files, vroom, id = 'path', show_col_types = F) %>%
+  mutate(id = as.numeric(sub('.*/([0-9]+)[.]csv$', '\\1', path))) %>%
   select(id, distance, time, moving, speed = velocity_smooth, lat, lon,
          altitude, grade = grade_smooth, hr = heartrate, cadence) %>%
   arrange(id, time)
