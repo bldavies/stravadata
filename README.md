@@ -28,6 +28,17 @@ The steps for doing so are as follows.
 
 After creating the data, run `make package` in the same Terminal window or `devtools::install()` in a fresh `stravadata.Rproj` instance to install the package.
 
+## Dependencies
+
+Run
+
+```r
+install.packages(c('tidyverse', 'vroom'))
+```
+
+at the R console to install the packages necessary for adding data.
+
+
 ## License
 
 MIT
