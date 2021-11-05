@@ -3,7 +3,7 @@
 # This script extracts data on activity best efforts.
 #
 # Ben Davies
-# April 2020
+# November 2021
 
 
 if (length(dir('data-raw/activities')) == 0) {
@@ -50,4 +50,6 @@ save(best_efforts, file = 'data/best-efforts.rda', version = 2, compress = 'bzip
 
 # Session info ----
 
-bldr::save_session_info('data-raw/best-efforts.log')
+if ('bldr' %in% rownames(installed.packages())) {
+  bldr::save_session_info('data-raw/activities.log')
+}

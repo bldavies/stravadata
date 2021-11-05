@@ -3,7 +3,7 @@
 # This script downloads Strava activity data from the Strava API.
 #
 # Ben Davies
-# November 2020
+# November 2021
 
 
 # Initialisation ----
@@ -108,4 +108,6 @@ save(activities, file = 'data/activities.rda', version = 2, compress = 'bzip2')
 
 # Session info ----
 
-bldr::save_session_info('data-raw/activities.log')
+if ('bldr' %in% rownames(installed.packages())) {
+  bldr::save_session_info('data-raw/activities.log')
+}

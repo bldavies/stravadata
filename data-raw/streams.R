@@ -3,7 +3,7 @@
 # This script downloads activity stream data via the Strava API.
 #
 # Ben Davies
-# September 2021
+# November 2021
 
 
 if (!file.exists('data/activities.rda')) {
@@ -94,4 +94,6 @@ save(streams, file = 'data/streams.rda', version = 2, compress = 'bzip2')
 
 # Session info ----
 
-bldr::save_session_info('data-raw/streams.log')
+if ('bldr' %in% rownames(installed.packages())) {
+  bldr::save_session_info('data-raw/activities.log')
+}
