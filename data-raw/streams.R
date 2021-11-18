@@ -95,5 +95,5 @@ save(streams, file = 'data/streams.rda', version = 2, compress = 'bzip2')
 # Session info ----
 
 if ('bldr' %in% rownames(installed.packages())) {
-  bldr::save_session_info('data-raw/activities.log')
+  bldr::save_session_info('data-raw/streams.log')
 }
