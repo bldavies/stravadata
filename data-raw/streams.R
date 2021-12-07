@@ -22,6 +22,7 @@ library(httr)
 library(jsonlite)
 library(purrr)
 library(readr)
+library(tidyr)
 library(vroom)
 
 load('data/activities.rda')
@@ -83,10 +84,24 @@ for (id in missing_ids) {
 
 cache_files <- list.files(cache_dir, full.names = T)
 
-streams <- map_df(cache_files, vroom, id = 'path', show_col_types = F) %>%
+streams_new_ids <- filter(activities, type %in% types)$id
+if (file.exists('data/streams.rda')) {
+  load('data/streams.rda')
+  streams_new_ids <- setdiff(streams_new_ids, streams$id)
+} else {
+  streams = tibble()
+}
+
+streams_new <- tibble(path = cache_files) %>%
   mutate(id = as.numeric(sub('.*/([0-9]+)[.]csv$', '\\1', path))) %>%
+  filter(id %in% streams_new_ids) %>%
+  mutate(res = map(path, vroom, show_col_types = F)) %>%
+  unnest('res') %>%
   select(id, distance, time, moving, speed = velocity_smooth, lat, lon,
-         altitude, grade = grade_smooth, hr = heartrate, cadence) %>%
+         altitude, grade = grade_smooth, hr = heartrate, cadence)
+
+streams <- streams %>%
+  bind_rows(streams_new) %>%
   arrange(id, time)
 
 save(streams, file = 'data/streams.rda', version = 2, compress = 'bzip2')
