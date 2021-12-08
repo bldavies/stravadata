@@ -11,6 +11,8 @@ Data frame with columns
 \item{name}{Activity name}
 \item{type}{Activity type}
 \item{workout_type}{Workout type}
+\item{commute}{Whether activity is commute}
+\item{private}{Whether activity is private}
 \item{start_time}{Start time (YYYY-MM-DD HH:MM:SS)}
 \item{timezone}{Time zone}
 \item{distance}{Total distance travelled (metres)}

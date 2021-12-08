@@ -3,7 +3,7 @@
 # This script downloads Strava activity data from the Strava API.
 #
 # Ben Davies
-# November 2021
+# December 2021
 
 
 # Initialisation ----
@@ -81,6 +81,8 @@ activities <- cache_list %>%
         name         = x$name,
         type         = x$type,
         workout_type = null2na(x$workout_type),
+        commute      = x$commute,
+        private      = x$private,
         start_time   = as_datetime(x$start_date_local),
         timezone     = x$timezone,
         distance     = x$distance,
@@ -98,6 +100,7 @@ activities <- cache_list %>%
     }
   ) %>%
   bind_rows() %>%
+  mutate_if(is.logical, as.integer) %>%
   arrange(id)
 
 write_csv(activities, 'data-raw/activities.csv')
