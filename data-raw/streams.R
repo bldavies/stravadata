@@ -3,7 +3,7 @@
 # This script downloads activity stream data via the Strava API.
 #
 # Ben Davies
-# November 2021
+# December 2021
 
 
 if (!file.exists('data/activities.rda')) {
@@ -89,7 +89,7 @@ if (file.exists('data/streams.rda')) {
   load('data/streams.rda')
   streams_new_ids <- setdiff(streams_new_ids, streams$id)
 } else {
-  streams = tibble()
+  streams <- tibble()
 }
 
 streams_new <- tibble(path = cache_files) %>%
@@ -97,11 +97,11 @@ streams_new <- tibble(path = cache_files) %>%
   filter(id %in% streams_new_ids) %>%
   mutate(res = map(path, vroom, show_col_types = F)) %>%
   unnest('res') %>%
-  select(id, distance, time, moving, speed = velocity_smooth, lat, lon,
-         altitude, grade = grade_smooth, hr = heartrate, cadence)
+  rename_with(recode, velocity_smooth = 'speed', grade_smooth = 'grade', heartrate = 'hr')
 
 streams <- streams %>%
   bind_rows(streams_new) %>%
+  select(id, distance, time, moving, speed, lat, lon, altitude, grade, hr, cadence) %>%
   arrange(id, time)
 
 save(streams, file = 'data/streams.rda', version = 2, compress = 'bzip2')
