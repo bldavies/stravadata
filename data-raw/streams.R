@@ -96,12 +96,12 @@ streams_new <- tibble(path = cache_files) %>%
   filter(id %in% streams_new_ids) %>%
   mutate(res = map(path, vroom, show_col_types = F)) %>%
   unnest('res') %>%
-  rename_with(recode, velocity_smooth = 'speed', grade_smooth = 'grade', heartrate = 'hr')
+  rename_with(recode, velocity_smooth = 'speed', heartrate = 'hr')
 
 streams <- streams %>%
   filter(!id %in% streams_new_ids) %>%
   bind_rows(streams_new) %>%
-  select(id, distance, time, moving, speed, lat, lon, altitude, grade, hr, cadence) %>%
+  select(id, distance, time, moving, speed, lat, lon, altitude, hr, cadence) %>%
   arrange(id, time)
 
 save(streams, file = 'data/streams.rda', version = 2, compress = 'bzip2')

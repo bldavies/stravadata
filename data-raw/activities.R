@@ -3,7 +3,7 @@
 # This script downloads Strava activity data from the Strava API.
 #
 # Ben Davies
-# December 2021
+# September 2022
 
 
 # Initialisation ----
@@ -98,6 +98,7 @@ activities <- cache_list %>%
     }
   ) %>%
   bind_rows() %>%
+  mutate(workout_type = replace(workout_type, workout_type %in% c(0, 10), NA)) %>%
   mutate_if(is.logical, as.integer) %>%
   arrange(id)
 
