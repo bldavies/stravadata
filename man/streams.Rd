@@ -15,7 +15,6 @@ Data frame with columns
 \item{lat}{Latitude coordinate}
 \item{lon}{Longitude coordinate}
 \item{altitude}{Altitude (metres)}
-\item{grade}{Smoothed gradient (percent)}
 \item{hr}{Heart rate (beats per minute)}
 \item{cadence}{Cadence (rotations per minute)}
 }
