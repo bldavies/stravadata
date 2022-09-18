@@ -99,7 +99,6 @@ activities <- cache_list %>%
   ) %>%
   bind_rows() %>%
   mutate(workout_type = replace(workout_type, workout_type %in% c(0, 10), NA)) %>%
-  mutate_if(is.logical, as.integer) %>%
   arrange(id)
 
 write_csv(activities, 'data-raw/activities.csv')
