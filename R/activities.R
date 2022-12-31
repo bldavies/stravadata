@@ -14,6 +14,7 @@
 #' \item{name}{Activity name}
 #' \item{type}{Activity type}
 #' \item{workout_type}{Workout type (1 = race, 2 = long run, 3 = workout)}
+#' \item{indoor}{Whether activity was recorded indoors}
 #' \item{commute}{Whether activity is commute}
 #' \item{private}{Whether activity is private}
 #' \item{start_time}{Start time (YYYY-MM-DD HH:MM:SS)}

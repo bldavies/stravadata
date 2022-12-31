@@ -3,7 +3,7 @@
 # This script downloads Strava activity data from the Strava API.
 #
 # Ben Davies
-# September 2022
+# December 2022
 
 
 # Initialisation ----
@@ -81,6 +81,7 @@ activities <- cache_list %>%
         name         = x$name,
         type         = x$type,
         workout_type = null2na(x$workout_type),
+        indoor       = x$trainer,
         commute      = x$commute,
         private      = x$private,
         start_time   = as_datetime(x$start_date_local),
