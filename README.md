@@ -9,6 +9,10 @@ The package contains the following data frames.
 
 I obtain these data via the [Strava API](https://developers.strava.com) using the process described [here](https://bldavies.com/blog/accessing-strava-api/).
 
+## Usage
+
+See [my blog post](https://bldavies.com/blog/stravadata-demo/) for examples.
+
 ## Installation
 
 The public version of this package does not include any data.
@@ -37,7 +41,6 @@ install.packages(c('tidyverse', 'vroom'))
 ```
 
 at the R console to install the packages necessary for adding data.
-
 
 ## License
 
