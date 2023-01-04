@@ -53,7 +53,7 @@ source('data-raw/oauth-token.R')
 
 types <- c('Run', 'Ride')
 missing_ids <- setdiff(
-  filter(activities, type %in% types, !indoor)$id,
+  filter(activities, type %in% types, !indoor, !private)$id,
   as.numeric(sub('[.]csv$', '', list.files(cache_dir)))
 )
 
@@ -86,7 +86,7 @@ cache_files <- list.files(cache_dir, full.names = T)
 
 if (file.exists('data/streams.rda')) {
   load('data/streams.rda')
-  streams_new_ids <- union(setdiff(filter(activities, type %in% types, !indoor)$id, streams$id), missing_ids)
+  streams_new_ids <- union(setdiff(filter(activities, type %in% types, !indoor, !private)$id, streams$id), missing_ids)
 } else {
   streams <- tibble()
 }
