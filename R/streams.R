@@ -14,12 +14,10 @@
 #' \item{distance}{Cumulative distance (metres)}
 #' \item{time}{Cumulative time (seconds)}
 #' \item{moving}{Whether moving}
-#' \item{speed}{Smoothed speed (metres per second)}
 #' \item{lat}{Latitude coordinate}
 #' \item{lon}{Longitude coordinate}
 #' \item{altitude}{Altitude (metres)}
 #' \item{hr}{Heart rate (beats per minute)}
-#' \item{cadence}{Cadence (rotations per minute)}
 #' }
 #' 
 #' @source \href{https://developers.strava.com}{Strava API}
