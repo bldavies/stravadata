@@ -1,6 +1,9 @@
 all: data package
 
-data: activities best-efforts streams
+data: downloads activities best-efforts streams
+
+downloads:
+	Rscript data-raw/downloads.R
 
 activities:
 	Rscript data-raw/activities.R

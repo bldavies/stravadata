@@ -1,13 +1,13 @@
 # BEST-EFFORTS.R
 #
-# This script extracts data on activity best efforts.
+# This script creates a table of activity best efforts.
 #
 # Ben Davies
-# November 2021
+# April 2023
 
 
-if (length(dir('data-raw/activities')) == 0) {
-  stop('data-raw/activities/ must not be empty.')
+if (length(dir('data-raw/downloads')) == 0) {
+  stop('data-raw/downloads/ must not be empty.')
 }
 
 if (file_test('-ot', 'data/activities.rda', 'data/best-efforts.rda')) {
@@ -15,7 +15,7 @@ if (file_test('-ot', 'data/activities.rda', 'data/best-efforts.rda')) {
 }
 
 
-# Initialisation ----
+# Initialization ----
 
 library(dplyr)
 library(jsonlite)
@@ -24,9 +24,11 @@ library(readr)
 
 # Data extraction and export ----
 
-cache_list <- lapply(dir('data-raw/activities/', full.names = T), read_json)
+cache_files = list.files('data-raw/downloads', 'details[.]json', full.names = T, recursive = T)
 
-best_efforts <- cache_list %>%
+cache_list = lapply(cache_files, read_json)
+
+best_efforts = cache_list %>%
   lapply(function(x) x$best_efforts) %>%
   unlist(recursive = F) %>%
   lapply(

@@ -1,9 +1,9 @@
 # STREAMS.R
 #
-# This script downloads activity stream data via the Strava API.
+# This script creates a table of disaggregate activity streams.
 #
 # Ben Davies
-# January 2023
+# April 2023
 
 
 if (!file.exists('data/activities.rda')) {
@@ -15,11 +15,9 @@ if (file_test('-ot', 'data/activities.rda', 'data/streams.rda')) {
 }
 
 
-# Initialisation ----
+# Initialization ----
 
 library(dplyr)
-library(httr)
-library(jsonlite)
 library(purrr)
 library(readr)
 library(tidyr)
@@ -27,78 +25,37 @@ library(vroom)
 
 load('data/activities.rda')
 
-cache_dir <- 'data-raw/streams/'
-if (!dir.exists(cache_dir)) dir.create(cache_dir)
-
-req_delay <- ceiling(60 * 60 * 24 / 3e4)  # API rate limit is 30k requests per day
-
-keys <- c(
-  'altitude',
-  'cadence',
-  'distance',
-  'grade_smooth',
-  'heartrate',
-  'latlng',
-  'moving',
-  'temp',
-  'time',
-  'velocity_smooth'
-) %>%
-  paste(collapse = ',')
-
-
-# API requests and cache updates ----
-
-source('data-raw/oauth-token.R')
-
-types <- c('Run', 'Ride')
-missing_ids <- setdiff(
-  filter(activities, type %in% types, !indoor, !private)$id,
-  as.numeric(sub('[.]csv$', '', list.files(cache_dir)))
-)
-
-for (id in missing_ids) {
-  req <- GET(
-    url = paste0('https://www.strava.com/api/v3/activities/', id, '/streams/', keys),
-    config = token
-  )
-  stop_for_status(req)
-  req_content <- content(req)
-  res <- list()
-  for (i in seq_along(req_content)) {
-    if (req_content[[i]]$type == 'latlng') {
-      res[['lat']] <- sprintf('%.6f', sapply(req_content[[i]]$data, function(x) x[[1]]))
-      res[['lon']] <- sprintf('%.6f', sapply(req_content[[i]]$data, function(x) x[[2]]))
-    } else {
-      res[[req_content[[i]]$type]] <- unlist(req_content[[i]]$data)
-    }
-  }
-  res %>%
-    as_tibble() %>%
-    write_csv(paste0(cache_dir, id, '.csv'))
-  Sys.sleep(req_delay)
-}
+focal_types = c('Run', 'Ride')
 
 
 # Data collation and export ----
 
-cache_files <- list.files(cache_dir, full.names = T)
+cache_files = list.files('data-raw/downloads', 'streams[.]csv', full.names = T, recursive = T)
 
 if (file.exists('data/streams.rda')) {
   load('data/streams.rda')
-  streams_new_ids <- union(setdiff(filter(activities, type %in% types, !indoor, !private)$id, streams$id), missing_ids)
 } else {
-  streams <- tibble()
+  streams = tibble()
 }
 
-streams_new <- tibble(path = cache_files) %>%
-  mutate(id = as.numeric(sub('.*/([0-9]+)[.]csv$', '\\1', path))) %>%
+missing_ids = activities %>%
+  filter(type %in% focal_types, !indoor, !private) %>%
+  anti_join(streams, by = 'id') %>%
+  pull(id)
+
+streams_new_ids = base::intersect(
+  missing_ids,
+  as.numeric(sub('.*/(.*)/streams[.]csv$', '\\1', cache_files))
+)
+
+streams_new = tibble(path = cache_files) %>%
+  mutate(id = as.numeric(sub('.*/(.*)/streams[.]csv$', '\\1', path))) %>%
   filter(id %in% streams_new_ids) %>%
   mutate(res = map(path, vroom, show_col_types = F)) %>%
   unnest('res') %>%
   rename_with(recode, heartrate = 'hr')
 
-streams <- streams %>%
+streams = streams %>%
   filter(!id %in% streams_new_ids) %>%
   bind_rows(streams_new) %>%
   select(id, distance, time, moving, lat, lon, altitude, hr) %>%

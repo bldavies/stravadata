@@ -1,79 +1,31 @@
 # ACTIVITIES.R
 #
-# This script downloads Strava activity data from the Strava API.
+# This script creates a table of aggregate activity features.
 #
 # Ben Davies
-# December 2022
+# April 2023
 
 
-# Initialisation ----
+# Initialization ----
 
 library(dplyr)
-library(httr)
 library(lubridate)
 library(jsonlite)
 library(readr)
 
-cache_dir <- 'data-raw/activities/'
-if (!dir.exists(cache_dir)) dir.create(cache_dir)
 
-req_delay <- ceiling(60 * 60 * 24 / 3e4)  # API rate limit is 30k requests per day
+# Data import ----
 
+cache_files = list.files('data-raw/downloads', 'details[.]json', full.names = T, recursive = T)
 
-# API requests ----
-
-source('data-raw/oauth-token.R')
-
-activities_list <- list()
-i <- 1
-done <- F
-while (!done) {
-  req <- GET(
-    url = 'https://www.strava.com/api/v3/athlete/activities',
-    config = token,
-    query = list(per_page = 200, page = i)
-  )
-  stop_for_status(req)
-  activities_list[[i]] <- fromJSON(content(req, as = 'text'), flatten = T)
-  if (length(content(req)) < 200) {
-    done <- T
-  } else {
-    i <- i + 1
-  }
-  Sys.sleep(req_delay)
-}
-
-missing_ids <- setdiff(
-  unlist(lapply(activities_list, function(x) x$id)),
-  as.numeric(sub('[.]json', '', list.files(cache_dir)))
-)
-
-if (length(missing_ids) == 0) {
-  stop('Data already up to date.')
-}
-
-for (id in missing_ids) {
-  req <- GET(
-    url = paste0('https://www.strava.com/api/v3/activities/', id),
-    config = token,
-    query = list(include_all_efforts = "TRUE")
-  )
-  stop_for_status(req)
-  req %>%
-    content(as = 'text') %>%
-    prettify() %>%
-    write_file(paste0(cache_dir, id, '.json'))
-  Sys.sleep(req_delay)
-}
+cache_list = lapply(cache_files, read_json)
 
 
 # Data export ----
 
-cache_list <- lapply(dir(cache_dir, full.names = T), read_json)
+null2na = function(x) ifelse(!is.null(x), x, NA)
 
-null2na <- function(x) ifelse(!is.null(x), x, NA)
-
-activities <- cache_list %>%
+activities = cache_list %>%
   lapply(
     function(x) {
       tibble(
