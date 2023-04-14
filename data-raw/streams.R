@@ -7,11 +7,7 @@
 
 
 if (!file.exists('data/activities.rda')) {
-  stop('data/activities.rda must exist.')
-}
-
-if (file_test('-ot', 'data/activities.rda', 'data/streams.rda')) {
-  stop('Data already up to date.')
+  stop('data/activities.rda does not exist')
 }
 
 
@@ -21,47 +17,85 @@ library(dplyr)
 library(purrr)
 library(readr)
 library(tidyr)
+library(usethis)
 library(vroom)
 
+# Set input directory
+base_dir = 'data-raw/downloads'
+
+# Import activities
 load('data/activities.rda')
 
-focal_types = c('Run', 'Ride')
+# Define function for extracting activity ID from stream file path
+get_id = function(x) as.numeric(sub('.*/(.*)/streams[.]csv', '\\1', x))
 
 
-# Data collation and export ----
+# Caching ----
 
-cache_files = list.files('data-raw/downloads', 'streams[.]csv', full.names = T, recursive = T)
-
-if (file.exists('data/streams.rda')) {
-  load('data/streams.rda')
-} else {
-  streams = tibble()
-}
-
-missing_ids = activities %>%
-  filter(type %in% focal_types, !indoor, !private) %>%
-  anti_join(streams, by = 'id') %>%
+# Determine included activity IDs
+included_ids = activities %>%
+  filter(type %in% c('Run', 'Ride'), !commute, !private) %>%
   pull(id)
 
-streams_new_ids = base::intersect(
-  missing_ids,
-  as.numeric(sub('.*/(.*)/streams[.]csv$', '\\1', cache_files))
-)
+# Initialize cache directory
+cache_dir = 'data-raw/streams'
+if (!dir.exists(cache_dir)) dir.create(cache_dir)
 
-streams_new = tibble(path = cache_files) %>%
-  mutate(id = as.numeric(sub('.*/(.*)/streams[.]csv$', '\\1', path))) %>%
-  filter(id %in% streams_new_ids) %>%
-  mutate(res = map(path, vroom, show_col_types = F)) %>%
-  unnest('res') %>%
-  rename_with(recode, heartrate = 'hr')
+# Iterate over years
+year_dirs = list.dirs(base_dir, recursive = F)
+for (year_dir in year_dirs) {
+  
+  # Iterate over months
+  month_dirs = list.dirs(year_dir, recursive = F)
+  for (month_dir in month_dirs) {
+    
+    # Initialize cache file
+    cache_file = sub(paste0(base_dir, '/(.*)/(.*)'), paste0(cache_dir, '/\\1-\\2.csv'), month_dir)
+    
+    # List stream files for included activities
+    stream_files = list.files(month_dir, 'streams[.]csv', full.names = T, recursive = T)
+    stream_files_included = stream_files[get_id(stream_files) %in% included_ids]
+    
+    # Create/update cache
+    if (!file.exists(cache_file) | file.mtime(cache_file) < max(file.mtime(stream_files_included))) {
+      
+      tibble(file = stream_files_included) %>%
+        mutate(id = get_id(file)) %>%
+        mutate(res = map(file, vroom, show_col_types = F)) %>%
+        unnest('res') %>%
+        select(-file) %>%
+        write_csv(cache_file)
+      
+    }
+  }
+}
 
-streams = streams %>%
-  filter(!id %in% streams_new_ids) %>%
-  bind_rows(streams_new) %>%
-  select(id, distance, time, moving, lat, lon, altitude, hr) %>%
-  arrange(id, time)
 
-save(streams, file = 'data/streams.rda', version = 2, compress = 'bzip2')
+# Collation ----
+
+# Initialize output file
+out_file = 'data-raw/streams.txt'
+
+# List files
+cache_files = list.files(cache_dir, '[.]csv', full.names = T)
+
+# Create/update table
+if (!file.exists(out_file) | file.mtime(out_file) < max(file.mtime(cache_files))) {
+  
+  # Build table
+  streams = cache_files %>%
+    lapply(read_csv, show_col_types = F) %>%
+    bind_rows() %>%
+    select(id, distance, time, moving, lat, lon, altitude, hr = heartrate) %>%
+    arrange(id, time)
+  
+  # Export table
+  use_data(streams, overwrite = T)
+  
+  # Save output file
+  write_file(paste('Updated', Sys.time()), out_file)
+  
+}
 
 
 # Session info ----
