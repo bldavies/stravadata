@@ -3,7 +3,7 @@
 # This script creates a table of activity best efforts.
 #
 # Ben Davies
-# April 2023
+# June 2023
 
 
 # Initialization ----
@@ -52,11 +52,11 @@ for (year_dir in year_dirs) {
               effort = x$name,
               start_index = x$start_index,
               end_index = x$end_index
-            )
+            ) %>%
+              mutate_at(., c('start_index', 'end_index'), function(x) as.integer(x + 1))
           }
         ) %>%
         bind_rows() %>%
-        mutate_at(c('start_index', 'end_index'), function(x) as.integer(x + 1)) %>%
         write_csv(cache_file)
       
     }
