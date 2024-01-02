@@ -3,7 +3,7 @@
 # This script creates a table of disaggregate activity streams.
 #
 # Ben Davies
-# April 2023
+# January 2024
 
 
 if (!file.exists('data/activities.rda')) {
@@ -57,15 +57,17 @@ for (year_dir in year_dirs) {
     stream_files_included = stream_files[get_id(stream_files) %in% included_ids]
     
     # Create/update cache
-    if (!file.exists(cache_file) | file.mtime(cache_file) < max(file.mtime(stream_files_included))) {
-      
-      tibble(file = stream_files_included) %>%
-        mutate(id = get_id(file)) %>%
-        mutate(res = map(file, vroom, show_col_types = F)) %>%
-        unnest('res') %>%
-        select(-file) %>%
-        write_csv(cache_file)
-      
+    if (length(stream_files_included) > 0) {
+      if (!file.exists(cache_file) | file.mtime(cache_file) < max(file.mtime(stream_files_included))) {
+        
+        tibble(file = stream_files_included) %>%
+          mutate(id = get_id(file)) %>%
+          mutate(res = map(file, vroom, show_col_types = F)) %>%
+          unnest('res') %>%
+          select(-file) %>%
+          write_csv(cache_file)
+        
+      }
     }
   }
 }
