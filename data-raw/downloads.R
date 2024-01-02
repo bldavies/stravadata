@@ -3,7 +3,7 @@
 # This script downloads Strava activity data from the Strava API.
 #
 # Ben Davies
-# April 2023
+# January 2024
 
 
 # Initialization ----
@@ -21,7 +21,7 @@ base_dir = 'data-raw/downloads'
 if (!dir.exists(base_dir)) dir.create(base_dir)
 
 # Set request delay
-req_delay = ceiling(60 * 60 * 24 / 3e4)  # API rate limit is 30k requests per day
+req_delay = ceiling(15 * 60 / 100)  # API rate limit is 100 requests every 15 minutes
 
 # Set stream keys
 stream_keys <- c(
