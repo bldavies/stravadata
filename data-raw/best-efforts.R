@@ -3,7 +3,7 @@
 # This script creates a table of activity best efforts.
 #
 # Ben Davies
-# June 2023
+# February 2025
 
 
 # Initialization ----
@@ -79,6 +79,7 @@ if (!file.exists(out_file) | file.mtime(out_file) < max(file.mtime(cache_files))
   best_efforts = cache_files %>%
     lapply(read_csv, show_col_types = F) %>%
     bind_rows() %>%
+    mutate(effort = sub('K$', 'k', effort)) %>%
     arrange(id, effort)
   
   # Export table
