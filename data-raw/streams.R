@@ -3,7 +3,7 @@
 # This script creates a table of disaggregate activity streams.
 #
 # Ben Davies
-# January 2024
+# August 2025
 
 
 if (!file.exists('data/activities.rda')) {
@@ -34,7 +34,7 @@ get_id = function(x) as.numeric(sub('.*/(.*)/streams[.]csv', '\\1', x))
 
 # Determine included activity IDs
 included_ids = activities %>%
-  filter(type %in% c('Run', 'Ride'), !commute, !private) %>%
+  filter(type %in% c('Run', 'Ride', 'EBikeRide'), !commute, !private) %>%
   pull(id)
 
 # Initialize cache directory
